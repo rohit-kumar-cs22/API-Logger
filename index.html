@@ -42,11 +42,11 @@
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
-                    return response.json(); // Assuming JSON response; adjust if it's plain text
+                    return response.text(); // Changed to handle plain text response
                 })
                 .then(data => {
                     const time = new Date().toLocaleString();
-                    const message = data.message || JSON.stringify(data); // Use 'message' if present, else full JSON
+                    const message = data; // data is now the plain text string (e.g., "Gateway is up message")
                     const log = `${time}: ${message}\n`;
                     logsDiv.innerHTML += log;
                     logsDiv.scrollTop = logsDiv.scrollHeight; // Auto-scroll to bottom
@@ -63,7 +63,7 @@
         callAPI();
 
         // Set interval for every 5 minutes (300,000 ms)
-        setInterval(callAPI, 3000);
+        setInterval(callAPI, 300000);
     </script>
 </body>
 </html>
