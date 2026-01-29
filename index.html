@@ -33,37 +33,45 @@
     <div id="logs"></div>
 
     <script>
-        const logsDiv = document.getElementById('logs');
-        const apiUrl = 'https://ecommerce-gateway-service-aoto.onrender.com/';
+    const logsDiv = document.getElementById('logs');
 
-        function callAPI() {
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    return response.text(); // Changed to handle plain text response
-                })
-                .then(data => {
-                    const time = new Date().toLocaleString();
-                    const message = data; // data is now the plain text string (e.g., "Gateway is up message")
-                    const log = `${time}: ${message}\n`;
-                    logsDiv.innerHTML += log;
-                    logsDiv.scrollTop = logsDiv.scrollHeight; // Auto-scroll to bottom
-                })
-                .catch(error => {
-                    const time = new Date().toLocaleString();
-                    const log = `<span class="error">${time}: Error - ${error.message}</span>\n`;
-                    logsDiv.innerHTML += log;
-                    logsDiv.scrollTop = logsDiv.scrollHeight;
-                });
-        }
+    const apiUrls = [
+        'https://ecommerce2025-cart-service-1.onrender.com',
+        'https://ecommerce2025-5.onrender.com'
+    ];
 
-        // Call immediately on load
-        callAPI();
+    function callAPI(url) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const time = new Date().toLocaleString();
+                const log = `${time} [${url}]: ${data}\n`;
+                logsDiv.innerHTML += log;
+                logsDiv.scrollTop = logsDiv.scrollHeight;
+            })
+            .catch(error => {
+                const time = new Date().toLocaleString();
+                const log = `<span class="error">${time} [${url}]: Error - ${error.message}</span>\n`;
+                logsDiv.innerHTML += log;
+                logsDiv.scrollTop = logsDiv.scrollHeight;
+            });
+    }
 
-        // Set interval for every 5 minutes (300,00000 ms)
-        setInterval(callAPI, 300000);
-    </script>
+    function callAllAPIs() {
+        apiUrls.forEach(url => callAPI(url));
+    }
+
+    // Call immediately on load
+    callAllAPIs();
+
+    // Call every 5 minutes (300,000 ms)
+    setInterval(callAllAPIs, 300000);
+</script>
+
 </body>
 </html>
